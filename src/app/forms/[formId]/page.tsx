@@ -101,6 +101,9 @@ export default function FormPage() {
           <p className="mt-4 text-lg text-muted-foreground">
             Your responses have been recorded.
           </p>
+          <a href="/dashboard">
+            <Button className="mt-8">Back to Dashboard</Button>
+          </a>
         </div>
       </div>
     );
