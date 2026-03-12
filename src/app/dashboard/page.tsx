@@ -21,8 +21,19 @@ export default async function DashboardPage() {
 
   const isAdmin = session.user?.role === "admin";
 
+  const pastSubmissions = isAdmin
+    ? []
+    : await db.submission.findMany({
+        where: { userId: session.user.id },
+        include: {
+          form: { select: { title: true } },
+          answers: { include: { question: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
   const forms = await db.form.findMany({
-    where: isAdmin ? {} : { userId: session.user.id },
+    where: {},
     include: {
       questions: true,
       _count: { select: { submissions: true } },
@@ -88,6 +99,42 @@ export default async function DashboardPage() {
           <div className="mt-16 text-center text-muted-foreground">
             No surveys available yet.
           </div>
+        )}
+
+        {!isAdmin && pastSubmissions.length > 0 && (
+          <>
+            <h2 className="mt-12 text-2xl font-bold">My Past Submissions</h2>
+            <p className="mt-2 text-muted-foreground">
+              Your previous survey responses.
+            </p>
+            <div className="mt-6 space-y-4">
+              {pastSubmissions.map((submission) => (
+                <Card key={submission.id}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      {submission.form.title}
+                    </CardTitle>
+                    <CardDescription>
+                      Submitted{" "}
+                      {new Date(submission.createdAt).toLocaleString()}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-1">
+                      {submission.answers.map((answer) => (
+                        <li key={answer.id} className="text-sm">
+                          <span className="font-medium">
+                            {answer.question.text}:
+                          </span>{" "}
+                          {answer.value}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </>
         )}
       </main>
     </div>

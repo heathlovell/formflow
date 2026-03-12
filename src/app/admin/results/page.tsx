@@ -27,6 +27,7 @@ export default async function AdminResultsPage() {
       questions: true,
       submissions: {
         include: {
+          user: { select: { id: true, name: true, email: true } },
           answers: {
             include: {
               question: true,
@@ -82,9 +83,13 @@ export default async function AdminResultsPage() {
                         className="rounded-lg border p-4"
                       >
                         <p className="mb-2 text-sm font-medium">
-                          Submission #{index + 1}{" "}
+                          Submission #{index + 1}
+                          {" — "}
                           <span className="font-normal text-muted-foreground">
-                            &mdash;{" "}
+                            {submission.user
+                              ? submission.user.name || submission.user.email
+                              : "Anonymous"}
+                            {" · "}
                             {new Date(submission.createdAt).toLocaleString()}
                           </span>
                         </p>

@@ -16,6 +16,7 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   forms          Form[]
+  submissions    Submission[]
 }
 
 model Form {
@@ -44,6 +45,8 @@ model Submission {
   id        String   @id @default(cuid())
   formId    String
   form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   answers   Answer[]
   createdAt DateTime @default(now())
 }

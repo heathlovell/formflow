@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -21,6 +21,7 @@ type Form = {
 
 export default function FormPage() {
   const params = useParams();
+  const router = useRouter();
   const formId = params.formId as string;
 
   const [form, setForm] = useState<Form | null>(null);
@@ -54,11 +55,22 @@ export default function FormPage() {
         value,
       }));
 
-      await fetch(`/api/forms/${formId}/submit`, {
+      const res = await fetch(`/api/forms/${formId}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: answerPayload }),
       });
+
+      if (res.status === 401) {
+        router.push(`/login?callbackUrl=${encodeURIComponent(`/forms/${formId}`)}`);
+        return;
+      }
+
+      if (!res.ok) {
+        setSubmitting(false);
+        alert("Something went wrong. Please try again.");
+        return;
+      }
 
       setSubmitting(false);
       setSubmitted(true);
