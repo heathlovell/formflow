@@ -19,7 +19,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const isAdmin = session.user?.role === "admin";
+
   const forms = await db.form.findMany({
+    where: isAdmin ? {} : { userId: session.user.id },
     include: {
       questions: true,
       _count: { select: { submissions: true } },
@@ -46,8 +49,18 @@ export default async function DashboardPage() {
           Welcome back, {session.user?.name || "there"}!
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Here are your available surveys.
+          {isAdmin
+            ? "All surveys across the platform."
+            : "Here are your available surveys."}
         </p>
+
+        {isAdmin && (
+          <div className="mt-4">
+            <Link href="/admin/results">
+              <Button variant="outline">View All Results</Button>
+            </Link>
+          </div>
+        )}
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {forms.map((form) => (

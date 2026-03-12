@@ -21,6 +21,10 @@ async function main() {
   `;
 
   await sql`
+    ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "role" TEXT NOT NULL DEFAULT 'user'
+  `;
+
+  await sql`
     CREATE TABLE IF NOT EXISTS "Form" (
       "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
       "title" TEXT NOT NULL,

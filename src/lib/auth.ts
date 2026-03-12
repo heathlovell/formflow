@@ -27,12 +27,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!passwordMatch) return null;
 
-        return { id: user.id, name: user.name, email: user.email };
+        return { id: user.id, name: user.name, email: user.email, role: user.role };
       },
     }),
   ],
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
+  },
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string;
+        token.role = user.role;
+      }
+      if (!token.role) token.role = "user";
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      return session;
+    },
   },
 });
