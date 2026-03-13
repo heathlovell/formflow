@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DeleteUserButton } from "./delete-user-button";
+import { ResetPasswordButton } from "./reset-password-button";
 
 export default async function AdminUsersPage() {
   const session = await auth();
@@ -62,10 +63,16 @@ export default async function AdminUsersPage() {
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
                 {user.id !== session.user.id && (
-                  <DeleteUserButton
-                    userId={user.id}
-                    userName={user.name || user.email}
-                  />
+                  <div className="flex items-center gap-2">
+                    <ResetPasswordButton
+                      userId={user.id}
+                      userName={user.name || user.email}
+                    />
+                    <DeleteUserButton
+                      userId={user.id}
+                      userName={user.name || user.email}
+                    />
+                  </div>
                 )}
               </CardHeader>
               <CardContent>
