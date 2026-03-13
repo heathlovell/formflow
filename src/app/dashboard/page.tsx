@@ -87,8 +87,12 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent className="flex flex-1 flex-col justify-end gap-3">
                 <p className="text-sm text-muted-foreground">
-                  {form.questions.length} question{form.questions.length !== 1 ? "s" : ""} &middot;{" "}
-                  {form._count.submissions} response{form._count.submissions !== 1 ? "s" : ""}
+                  {form.questions.length} question{form.questions.length !== 1 ? "s" : ""}
+                  {isAdmin && (
+                    <>
+                      {" "}&middot; {form._count.submissions} response{form._count.submissions !== 1 ? "s" : ""}
+                    </>
+                  )}
                 </p>
                 <Link href={`/forms/${form.id}`}>
                   <Button className="w-full">Take Survey</Button>
