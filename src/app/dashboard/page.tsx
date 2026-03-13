@@ -66,9 +66,12 @@ export default async function DashboardPage() {
         </p>
 
         {isAdmin && (
-          <div className="mt-4">
+          <div className="mt-4 flex gap-3">
             <Link href="/admin/results">
               <Button variant="outline">View All Results</Button>
+            </Link>
+            <Link href="/admin/users">
+              <Button variant="outline">Manage Users</Button>
             </Link>
           </div>
         )}
